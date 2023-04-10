@@ -12,7 +12,7 @@ const app = express();
 // Process JSON input and put the data on req.body
 app.use(express.json());
 
-const sequelize = new Sequelize(process.env.DATABASE_URL);
+const sequelize = new Sequelize(process.env.DATABASE_URL || 'sqlite:memory:');
 
 // Process FORM intput and put the data on req.body
 app.use(express.urlencoded({ extended: true }));
@@ -26,7 +26,7 @@ const Users = sequelize.define('User', {
   password: {
     type: DataTypes.STRING,
     allowNull: false,
-  }
+  },
 });
 
 // Signup Route -- create a new user
@@ -86,7 +86,7 @@ app.post('/signin', async (req, res) => {
 // make sure our tables are created, start up the HTTP server.
 sequelize.sync()
   .then(() => {
-    app.listen(3000, () => console.log('server up'));
+    app.listen(3001, () => console.log('server up'));
   }).catch(e => {
     console.error('Could not start server', e.message);
   });
